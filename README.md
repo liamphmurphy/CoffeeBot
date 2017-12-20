@@ -7,6 +7,10 @@ This runs on Linux, Windows and Mac as long as you have Python 3 installed.
 python bot.py
 ```
 
+The config file is crucial for this bot to run. In fact, this is the only file that you should backup if you are running this bot for your own stream. If the config file is gone, so will all of your custom preferences. 
+
+Rename samplecfg.py to cfg.py for the program to recognize it.
+
 
 
 
