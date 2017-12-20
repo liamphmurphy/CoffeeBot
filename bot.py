@@ -25,6 +25,9 @@ def ban (sock, user):
 def bot_command (sock, cmd):
     sock.send("PRIVMSG {} : {}\r\n".format(cfg.CHAN, cfg.COMMANDS.get(cmd)).encode("utf-8"))
 
+def add_command(sock, msg):
+    print("hi")
+
 def main():
     s = socket.socket()
     s.connect((cfg.HOST,cfg.PORT))
@@ -67,6 +70,12 @@ def main():
                         sec_timeout(s, username)
                         print("User has been timed out.")
                         break'''
+            if "!add_command" in message:
+                print("Suh dude")
+                #add_command()
+            if "!restart_bot" in message:
+                chat(s, "Bleep bloop! I am restarting.")
+                main()
             
 
 if __name__ == "__main__":
