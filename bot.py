@@ -17,7 +17,6 @@ def ten_timeout (sock, user, secs=600):
     chat(sock, "/timeout {} {}".format(user, secs))
 
 def ban (sock, user):
-    #chat(sock, "/ban {}".format(user))
     chat(sock, "/ban {}".format(user))
     
 
@@ -33,7 +32,7 @@ def main():
     s.send("NICK {}\r\n".format(cfg.BOT_NICK).encode("utf-8"))
     s.send("JOIN {}\r\n".format(cfg.CHAN).encode("utf-8"))
 
-    CHAT_MSG=re.compile(r"^:\w+!\w+@\w+\.tmi\.twitch\.tv PRIVMSG #\w+ :")
+    chat_msg=re.compile(r"^:\w+!\w+@\w+\.tmi\.twitch\.tv PRIVMSG #\w+ :")
 
     while True:
         response = s.recv(1024).decode("utf-8")
@@ -41,7 +40,7 @@ def main():
             s.send("PONG :tmi.twitch.tv\r\n".encode("utf-8"))
         else:
             username = re.search(r"\w+", response).group(0)
-            message = CHAT_MSG.sub("", response)
+            message = chat_msg.sub("", response)
             print(username + ": " + message)
             for pattern in cfg.BAN_WORDS:
                 if re.match(pattern, message):
