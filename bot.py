@@ -1,8 +1,8 @@
 # Massive thanks to Cormac o-brien's tutorial for helping me understand how IRC networking works.
 # Tutorial link: http://www.instructables.com/id/Twitchtv-Moderator-Bot/
 
+import socket, re, os, sys
 import cfg
-import socket, re
 from time import sleep
 
 # Send a normal chat message for various scenarios
@@ -69,7 +69,7 @@ def main():
                 #add_command()
             if "!restart_bot" in message:
                 chat(s, "Bleep bloop! I am restarting.")
-                main()
+                os.execv(sys.executable, ['python'] + sys.argv)
             
 
 if __name__ == "__main__":
