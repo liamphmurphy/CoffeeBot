@@ -14,6 +14,7 @@ python bot.py
 ### High
 - [ ] Add way to make new commands from twitch chat
 -[ ] Support whispers to the bot
+-[ ] Timeout users for too many uppercase characters
 
 ### Medium
 - [ ] Add minigames
