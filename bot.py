@@ -7,12 +7,19 @@ from time import sleep
 
 # Send a normal chat message for various scenarios
 def chat (sock, msg):
-    sock.send("PRIVMSG {} :{}".format(cfg.CHAN, msg).encode("utf-8"))
-
+    sock.send("PRIVMSG {} :{}\r\n".format(cfg.CHAN, msg).encode("utf-8"))
 
 # BANHAMMER
-def timeout (sock, user, secs=600):
-    chat(sock, ".timeout {}".format(user,secs))
+def sec_timeout (sock, user, secs=1):
+    chat(sock, "/timeout {} {}".format(user,secs))
+
+def ten_timeout (sock, user, secs=600):
+    chat(sock, "/timeout {} {}".format(user, secs))
+
+def ban (sock, user):
+    #chat(sock, "/ban {}".format(user))
+    chat(sock, "/ban {}".format(user))
+    
 
 # Have the bot print out the result of a command to the channel's chat
 def bot_command (sock, cmd):
@@ -38,8 +45,8 @@ def main():
             print(username + ": " + message)
             for pattern in cfg.BAN_WORDS:
                 if re.match(pattern, message):
-                    timeout(s, username)
-                    print(username + " has been banned for saying: " + message)
+                    print(username)
+                    ban(s, username)
                     break
             for goof in cfg.GOOFY_WORDS:
                 if re.match(goof, message):
@@ -54,6 +61,12 @@ def main():
                     message = message.replace("\r\n", "")
                     bot_command(s, message)
                     break
+                '''if message.isupper():
+                    if (message, sum(message for u in message if u.isupper() > 10)):
+                        print(username)
+                        sec_timeout(s, username)
+                        print("User has been timed out.")
+                        break'''
 
 if __name__ == "__main__":
     main()
