@@ -64,12 +64,6 @@ def main():
                     message = message.replace("\r\n", "")
                     bot_command(s, message)
                     break
-                '''if message.isupper():
-                    if (message, sum(message for u in message if u.isupper() > 10)):
-                        print(username)
-                        sec_timeout(s, username)
-                        print("User has been timed out.")
-                        break'''
             if "!add_command" in message:
                 print("Suh dude")
                 #add_command()
