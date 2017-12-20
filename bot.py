@@ -18,6 +18,7 @@ def ten_timeout (sock, user, secs=600):
 
 def ban (sock, user):
     chat(sock, "/ban {}".format(user))
+    chat(sock, "Please watch your language @{}".format(user))
     
 
 # Have the bot print out the result of a command to the channel's chat
@@ -66,6 +67,7 @@ def main():
                         sec_timeout(s, username)
                         print("User has been timed out.")
                         break'''
+            
 
 if __name__ == "__main__":
     main()
