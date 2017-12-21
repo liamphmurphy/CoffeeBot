@@ -18,7 +18,8 @@ Rename samplecfg.py to cfg.py for the program to recognize it.
 ### High
 - [ ] Add way to make new commands from twitch chat
 - [ ] Support whispers to the bot
-- [ ] Timeout users for too many uppercase characters
+- [ ] Find a good long-term way to organize the code, not just all in one file (other than cfg).
+- [x] Timeout users for too many uppercase characters
 
 ### Medium
 - [ ] Add minigames
