@@ -30,7 +30,7 @@ def add_command(sock, msg):
     print("hi")
 
 def uptime_check(sock, bot_time):
-    chat(sock, "The bot has been online for {} seconds.".format(bot_time))
+    chat(sock, "The bot has been online for {} seconds.\r\n".format(bot_time))
 
 def current_game(sock, game):
     chat(sock, "{} is currently playing {}.".format(cfg.CHAN, game))
@@ -92,7 +92,7 @@ def main():
             
            
             if "!botrestart" in message:  # If user types !bot_restart, the bot will restart itself. Mainly to check for updates in cfg.py
-                chat(s, "Bleep bloop! I am restarting.")
+                chat(s, "Bleep bloop! I am restarting.\r\n")
                 os.execv(sys.executable, ['python'] + sys.argv)
                 break
             
