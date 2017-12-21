@@ -4,10 +4,11 @@
 import socket, re, os, sys
 import cfg
 import time
+import requests, json
 
 # Send a normal chat message for various scenarios
 def chat (sock, msg):
-    sock.send("PRIVMSG {} :{}\r\n".format(cfg.CHAN, msg).encode("utf-8"))
+    sock.send("PRIVMSG #{} :{}\r\n".format(cfg.CHAN, msg).encode("utf-8"))
 
 # BANHAMMER
 def sec_timeout (sock, user, secs=1):
@@ -23,7 +24,7 @@ def ban (sock, user):
 
 # Have the bot print out the result of a command to the channel's chat
 def bot_command (sock, cmd):
-    sock.send("PRIVMSG {} : {}\r\n".format(cfg.CHAN, cfg.COMMANDS.get(cmd)).encode("utf-8"))
+    sock.send("PRIVMSG #{} : {}\r\n".format(cfg.CHAN, cfg.COMMANDS.get(cmd)).encode("utf-8"))
 
 def add_command(sock, msg):
     print("hi")
@@ -31,13 +32,22 @@ def add_command(sock, msg):
 def uptime_check(sock, bot_time):
     chat(sock, "The bot has been online for {} seconds.\r\n".format(bot_time))
 
+def current_game(sock, game):
+    chat(sock, "{} is currently playing {}.".format(cfg.CHAN, game))
+
 def main():
     s = socket.socket()
     s.connect((cfg.HOST,cfg.PORT))
 
     s.send("PASS {}\r\n".format(cfg.BOT_PASS).encode("utf-8"))
     s.send("NICK {}\r\n".format(cfg.BOT_NICK).encode("utf-8"))
-    s.send("JOIN {}\r\n".format(cfg.CHAN).encode("utf-8"))
+    s.send("JOIN #{}\r\n".format(cfg.CHAN).encode("utf-8"))
+
+    
+    #url = "https://api.twitch.tv/kraken/channels/lphm/follows"
+    headers = {"Client-ID": "mj1k7s4wfaeb4rwfojwu5jjgjotn19"}
+    #print(result.json())
+
 
 
     chat_msg=re.compile(r"^:\w+!\w+@\w+\.tmi\.twitch\.tv PRIVMSG #\w+ :")
@@ -82,7 +92,12 @@ def main():
                 bot_uptime = str(round(bot_uptime, 2)) # Not sure how 'efficient' this is, but here we use round to reduce the float decimal points to 2 points.
                 uptime_check(s, bot_uptime)
                 break
-
+            if "!currentgame" in message:
+                url = "https://api.twitch.tv/kraken/channels/{}".format(cfg.CHAN)
+                result = requests.get(url, headers=headers)
+                json_response = result.json()
+                game_data = json_response['game']
+                current_game(s, game_data)
 
 if __name__ == "__main__":
     main()
