@@ -30,7 +30,7 @@ def add_command(sock, msg):
     print("hi")
 
 def uptime_check(sock, bot_time):
-    chat(sock, "The bot has been online for {} seconds.\r\n".format(bot_time))
+    chat(sock, "The bot has been online for {} seconds.".format(bot_time))
 
 def current_game(sock, game):
     chat(sock, "{} is currently playing {}.".format(cfg.CHAN, game))
@@ -98,6 +98,8 @@ def main():
                 json_response = result.json()
                 game_data = json_response['game']
                 current_game(s, game_data)
+            with open('chatlog.txt', 'ab') as f:
+                f.write((username +": " + message+"\n").encode("utf-8"))
 
 if __name__ == "__main__":
     main()
