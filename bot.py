@@ -43,10 +43,7 @@ def main():
     s.send("NICK {}\r\n".format(cfg.BOT_NICK).encode("utf-8"))
     s.send("JOIN #{}\r\n".format(cfg.CHAN).encode("utf-8"))
 
-    
-    #url = "https://api.twitch.tv/kraken/channels/lphm/follows"
     headers = {"Client-ID": "mj1k7s4wfaeb4rwfojwu5jjgjotn19"}
-    #print(result.json())
 
     chat_msg=re.compile(r"^:\w+!\w+@\w+\.tmi\.twitch\.tv PRIVMSG #\w+ :")
     bot_start = time.time() # init start time for the bot for bot_uptime later on. Outside while so it doesn't keep resetting.
