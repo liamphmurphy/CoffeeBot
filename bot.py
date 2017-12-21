@@ -60,11 +60,13 @@ def main():
             username = re.search(r"\w+", response).group(0)
             message = chat_msg.sub("", response)
             print(username + ": " + message)
-            for pattern in cfg.BAN_WORDS:
-                if re.match(pattern, message):
-                    print(username)
+            for banned_word in cfg.BAN_WORDS:
+                if re.match(banned_word, message):
                     ban(s, username)
                     break
+            for timeout_word in cfg.TIMEOUT_WORDS:
+                if re.match(timeout_word, message):
+                    ten_timeout(s, username)
             for goof in cfg.GOOFY_WORDS:
                 if re.match(goof, message):
                     print(cfg.BOT_NICK + ": "+message)
