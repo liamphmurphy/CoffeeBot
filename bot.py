@@ -91,7 +91,7 @@ def main():
             if "!bot_uptime" in message:
                 bot_uptime = str(round(bot_uptime, 2)) # Not sure how 'efficient' this is, but here we use round to reduce the float decimal points to 2 points.
                 uptime_check(s, bot_uptime)
-                break
+                
             if "!currentgame" in message:
                 url = "https://api.twitch.tv/kraken/channels/{}".format(cfg.CHAN)
                 result = requests.get(url, headers=headers)
