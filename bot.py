@@ -72,7 +72,7 @@ def main():
             if message.isupper():
                 total_caps = len(re.findall(r'[A-Z]',message))
                 print(username + " just typed " + str(total_caps) + " characters")
-                if total_caps > 20:
+                if total_caps > cfg.UPPERCASE_TIMEOUT:
                     sec_timeout(s, username)
                                 
             for goof in cfg.GOOFY_WORDS:
@@ -87,16 +87,16 @@ def main():
                     message = message.replace("\r\n", "") # IRC syntax causes \r\n to get appended to the message. Below gets rid of it.
                     bot_command(s, message)
                     break
-            if "!add_command" in message:
+            if "!addcommand" in message:
                 print("Stuff should be here, but it isn't yet. :(")
             
            
-            if "!bot_restart" in message:  # If user types !bot_restart, the bot will restart itself. Mainly to check for updates in cfg.py
+            if "!botrestart" in message:  # If user types !bot_restart, the bot will restart itself. Mainly to check for updates in cfg.py
                 chat(s, "Bleep bloop! I am restarting.")
                 os.execv(sys.executable, ['python'] + sys.argv)
                 break
             
-            if "!bot_uptime" in message:
+            if "!botuptime" in message:
                 bot_uptime = str(round(bot_uptime, 2)) # Not sure how 'efficient' this is, but here we use round to reduce the float decimal points to 2 points.
                 uptime_check(s, bot_uptime)
                 

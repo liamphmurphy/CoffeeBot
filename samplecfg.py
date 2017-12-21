@@ -23,6 +23,8 @@ GOOFY_WORDS = []
 
 # TIMEOUT WORDS
 
+UPPERCASE_TIMEOUT = 20 # If message from user contains more than this number, give a 1 sec timeout.
+
 TIMEOUT_WORDS = []
 
 # BANNABLE WORDS
