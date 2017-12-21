@@ -48,8 +48,6 @@ def main():
     headers = {"Client-ID": "mj1k7s4wfaeb4rwfojwu5jjgjotn19"}
     #print(result.json())
 
-
-
     chat_msg=re.compile(r"^:\w+!\w+@\w+\.tmi\.twitch\.tv PRIVMSG #\w+ :")
     bot_start = time.time() # init start time for the bot for bot_uptime later on. Outside while so it doesn't keep resetting.
 
@@ -98,8 +96,12 @@ def main():
                 json_response = result.json()
                 game_data = json_response['game']
                 current_game(s, game_data)
-            with open('chatlog.txt', 'ab') as f:
-                f.write((username +": " + message+"\n").encode("utf-8"))
+
+            # Some command line arguments
+            if len(sys.argv) > 1:
+                if "--log" in sys.argv:
+                    with open('chatlog.txt', 'ab') as f:
+                        f.write((username +": " + message+"\n").encode("utf-8"))
 
 if __name__ == "__main__":
     main()
