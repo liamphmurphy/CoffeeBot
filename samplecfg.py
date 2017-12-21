@@ -8,8 +8,8 @@ BOT_NICK = ""
 # Copy the whole text, including oauth:
 
 BOT_PASS = ""
-# Channel that the bot should moderate (Keep the # please!)
-CHAN = "#"
+# Channel that the bot should moderate
+CHAN = ""
 
 
 
