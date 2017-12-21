@@ -67,6 +67,14 @@ def main():
             for timeout_word in cfg.TIMEOUT_WORDS:
                 if re.match(timeout_word, message):
                     ten_timeout(s, username)
+
+            # Check for too many caps from users
+            if message.isupper():
+                total_caps = len(re.findall(r'[A-Z]',message))
+                print(username + " just typed " + str(total_caps) + " characters")
+                if total_caps > 20:
+                    sec_timeout(s, username)
+                                
             for goof in cfg.GOOFY_WORDS:
                 if re.match(goof, message):
                     print(cfg.BOT_NICK + ": "+message)
