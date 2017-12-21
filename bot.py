@@ -76,14 +76,13 @@ def main():
             if "!bot_restart" in message:  # If user types !bot_restart, the bot will restart itself. Mainly to check for updates in cfg.py
                 chat(s, "Bleep bloop! I am restarting.")
                 os.execv(sys.executable, ['python'] + sys.argv)
+                break
             
             if "!bot_uptime" in message:
                 bot_uptime = str(round(bot_uptime, 2)) # Not sure how 'efficient' this is, but here we use round to reduce the float decimal points to 2 points.
                 uptime_check(s, bot_uptime)
-                
+                break
 
-
-            
 
 if __name__ == "__main__":
     main()
