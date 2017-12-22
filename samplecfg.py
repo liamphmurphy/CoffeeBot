@@ -37,5 +37,7 @@ BAN_WORDS = []
 # INSIDE THE {}: '!commandname' : 'Result of the command!',
 # An example is below
 
+CHANNEL_QUOTES = {}
+
 COMMANDS = {'!bot' :'Hello, I am a bot. Bleep bloop! MrDestructoid',
             }

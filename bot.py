@@ -4,7 +4,7 @@
 import socket, re, os, sys
 import cfg
 import time
-import requests, json
+import requests, json, random
 
 # Send a normal chat message for various scenarios
 def chat (sock, msg):
@@ -83,6 +83,13 @@ def main():
                 if re.match(command, message):
                     message = message.replace("\r\n", "") # IRC syntax causes \r\n to get appended to the message. Below gets rid of it.
                     bot_command(s, message)
+                    break
+            for quote in cfg.CHANNEL_QUOTES:
+                if "!quote" in message:
+                    message = message.replace("\r\n", "") 
+                    num_quote, chan_quote = random.choice(list(cfg.CHANNEL_QUOTES.items())) # Select random quote from cfg.py
+                    print(chan_quote)
+                    chat(s, chan_quote)
                     break
             if "!addcommand" in message:
                 print("Stuff should be here, but it isn't yet. :(")
