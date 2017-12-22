@@ -20,6 +20,7 @@ Rename samplecfg.py to cfg.py for the program to recognize it.
 - [ ] Support whispers to the bot
 - [ ] Find a good long-term way to organize the code, not just all in one file (other than cfg).
 - [x] Timeout users for too many uppercase characters
+- [ ] Setup script that walks a user through a fresh setup. Ask channel name, bot name etc.
 
 ### Medium
 - [ ] Add minigames
