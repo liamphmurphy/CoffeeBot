@@ -24,7 +24,7 @@ Rename samplecfg.py to cfg.py for the program to recognize it.
 ### Medium
 - [ ] Add minigames
 - [x] Add first time setup (if cfg.py doesn't exist is the general idea)
-- [ ] quote system (Streamers can say funny things. When user types !quote, a random quote that the streamer/mods entered is printed)
+- [x] quote system (Streamers can say funny things. When user types !quote, a random quote that the streamer/mods entered is printed)
 - [ ] Add uptime counter
 
 ### Low
