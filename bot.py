@@ -91,9 +91,22 @@ def main():
                     print(chan_quote)
                     chat(s, chan_quote)
                     break
+                
+            if "!addquote" in message:
+                user_quote = message.split("!addquote ")[1] # All text in string after !addquote will be the actual new quote.
+                print(user_quote)
+                for key, value in cfg.CHANNEL_QUOTES.copy().items():
+                    #if key in cfg.CHANNEL_QUOTES.keys():
+                    #cfg.CHANNEL_QUOTES[key] = cfg.CHANNEL_QUOTES.get(2, key) 
+                    user_quote = user_quote.replace("\r\n", "")
+                    quote_key = key + 1
+                    print(quote_key)
+                    new_dict = ({quote_key: user_quote})
+                    print(new_dict)
+                    cfg.CHANNEL_QUOTES.update(new_dict)
+                    
             if "!addcommand" in message:
-                print("Stuff should be here, but it isn't yet. :(")
-            
+                print("Stuff should be here, but it isn't yet. :(")            
            
             if "!botrestart" in message:  # If user types !bot_restart, the bot will restart itself. Mainly to check for updates in cfg.py
                 chat(s, "Bleep bloop! I am restarting.\r\n")
