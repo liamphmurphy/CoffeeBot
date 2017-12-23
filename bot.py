@@ -1,10 +1,11 @@
+
 # Massive thanks to Cormac o-brien's tutorial for helping me understand how IRC networking works.
 # Tutorial link: http://www.instructables.com/id/Twitchtv-Moderator-Bot/
 
 import socket, re, os, sys
 import cfg
 import time
-import requests, json, random
+import requests, json, random, pickle
 
 # Send a normal chat message for various scenarios
 def chat (sock, msg):
@@ -26,6 +27,11 @@ def ban (sock, user):
 def bot_command (sock, cmd):
     sock.send("PRIVMSG #{} : {}\r\n".format(cfg.CHAN, cfg.COMMANDS.get(cmd)).encode("utf-8"))
 
+def whisp_command (sock, user, cmd):
+    print(user)
+    chat(sock, "/w {} {}".format(user, cfg.COMMANDS.get(cmd)))
+    #sock.send("PRIVMSG /w {} {}\r\n".format(user, cfg.COMMANDS.get(cmd)).encode("utf-8"))
+
 def add_command(sock, msg):
     print("hi")
 
@@ -42,10 +48,13 @@ def main():
     s.send("PASS {}\r\n".format(cfg.BOT_PASS).encode("utf-8"))
     s.send("NICK {}\r\n".format(cfg.BOT_NICK).encode("utf-8"))
     s.send("JOIN #{}\r\n".format(cfg.CHAN).encode("utf-8"))
+    s.send('CAP REQ :twitch.tv/commands\r\n'.encode("utf-8"))
+    s.send('CAP REQ :twitch.tv/membership\r\n'.encode("utf-8"))
 
     headers = {"Client-ID": "mj1k7s4wfaeb4rwfojwu5jjgjotn19"}
 
-    chat_msg=re.compile(r"^:\w+!\w+@\w+\.tmi\.twitch\.tv PRIVMSG #\w+ :")
+    chat_msg= re.compile(r"^:\w+!\w+@\w+\.tmi\.twitch\.tv PRIVMSG #\w+ :")
+    whisper_msg = re.compile(r"^:\w+!\w+@\w+\.tmi\.twitch\.tv WHISPER \w+ :")
     bot_start = time.time() # init start time for the bot for bot_uptime later on. Outside while so it doesn't keep resetting.
 
     while True:
@@ -56,6 +65,7 @@ def main():
             bot_uptime = time.time() - bot_start
             username = re.search(r"\w+", response).group(0)
             message = chat_msg.sub("", response)
+            whisper_message = whisper_msg.sub("", response)
             print(username + ": " + message)
             for banned_word in cfg.BAN_WORDS:
                 if re.match(banned_word, message):
@@ -81,13 +91,18 @@ def main():
             
             for command in cfg.COMMANDS: # Commands utilize a directory system in cfg.py
                 if re.match(command, message):
+                    print("reached command")
                     message = message.replace("\r\n", "") # IRC syntax causes \r\n to get appended to the message. Below gets rid of it.
                     bot_command(s, message)
                     break
+                if re.match(command,whisper_message):
+                    whisper_message = whisper_message.replace("\r\n", "")
+                    whisp_command(s, username, whisper_message)
+
             for quote in cfg.CHANNEL_QUOTES:
                 if "!quote" in message:
                     message = message.replace("\r\n", "") 
-                    num_quote, chan_quote = random.choice(list(cfg.CHANNEL_QUOTES.items())) # Select random quote from cfg.py
+                    num_quote, chan_quote = random.choice(dict(cfg.CHANNEL_QUOTES.items())) # Select random quote from cfg.py
                     print(chan_quote)
                     chat(s, chan_quote)
                     break
@@ -95,9 +110,8 @@ def main():
             if "!addquote" in message:
                 user_quote = message.split("!addquote ")[1] # All text in string after !addquote will be the actual new quote.
                 print(user_quote)
-                for key, value in cfg.CHANNEL_QUOTES.copy().items():
-                    #if key in cfg.CHANNEL_QUOTES.keys():
-                    #cfg.CHANNEL_QUOTES[key] = cfg.CHANNEL_QUOTES.get(2, key) 
+                for key in cfg.CHANNEL_QUOTES.copy().keys():
+                    cfg.CHANNEL_QUOTES[key] = cfg.CHANNEL_QUOTES.get(0, key) 
                     user_quote = user_quote.replace("\r\n", "")
                     quote_key = key + 1
                     print(quote_key)
@@ -121,6 +135,7 @@ def main():
                 url = "https://api.twitch.tv/kraken/channels/{}".format(cfg.CHAN)
                 result = requests.get(url, headers=headers)
                 json_response = result.json()
+                print(json_response)
                 game_data = json_response['game']
                 current_game(s, game_data)
 
