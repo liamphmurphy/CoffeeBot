@@ -11,6 +11,9 @@ import requests, json, random, pickle
 def chat (sock, msg):
     sock.send("PRIVMSG #{} :{}\r\n".format(cfg.CHAN, msg).encode("utf-8"))
 
+def whisper (sock, user, content):
+    chat(sock, "/w {} {}".format(user, cfg.COMMANDS.get(content)))
+
 # BANHAMMER
 def sec_timeout (sock, user, secs=1):
     chat(sock, "/timeout {} {}".format(user,secs))
@@ -26,11 +29,6 @@ def ban (sock, user):
 # Have the bot print out the result of a command to the channel's chat
 def bot_command (sock, cmd):
     sock.send("PRIVMSG #{} : {}\r\n".format(cfg.CHAN, cfg.COMMANDS.get(cmd)).encode("utf-8"))
-
-def whisp_command (sock, user, cmd):
-    print(user)
-    chat(sock, "/w {} {}".format(user, cfg.COMMANDS.get(cmd)))
-    #sock.send("PRIVMSG /w {} {}\r\n".format(user, cfg.COMMANDS.get(cmd)).encode("utf-8"))
 
 def add_command(sock, msg):
     print("hi")
@@ -97,7 +95,7 @@ def main():
                     break
                 if re.match(command,whisper_message):
                     whisper_message = whisper_message.replace("\r\n", "")
-                    whisp_command(s, username, whisper_message)
+                    whisper(s, username, whisper_message)
 
             for quote in cfg.CHANNEL_QUOTES:
                 if "!quote" in message:
