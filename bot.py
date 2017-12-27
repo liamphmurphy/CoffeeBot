@@ -5,7 +5,8 @@
 import socket, re, os, sys
 import cfg
 import time
-import requests, json, random, pickle
+import requests, json, random
+
 
 # Send a normal chat message for various scenarios
 def chat (sock, msg):
@@ -129,13 +130,16 @@ def main():
                 bot_uptime = str(round(bot_uptime, 2)) # Not sure how 'efficient' this is, but here we use round to reduce the float decimal points to 2 points.
                 uptime_check(s, bot_uptime)
                 
-            if "!currentgame" in message:
+            if "!game" in message:
                 url = "https://api.twitch.tv/kraken/channels/{}".format(cfg.CHAN)
                 result = requests.get(url, headers=headers)
                 json_response = result.json()
                 print(json_response)
                 game_data = json_response['game']
                 current_game(s, game_data)
+            
+            if "!guessnumber" in message:
+                print("Hiya")    
 
             # Some command line arguments
             if len(sys.argv) > 1:
