@@ -5,8 +5,8 @@
 import socket, re, os, sys
 import cfg
 import time
-import requests, json, random
-
+import requests, json, random, games
+from core.irc import IRC
 
 # Send a normal chat message for various scenarios
 def chat (sock, msg):
@@ -37,10 +37,8 @@ def add_command(sock, msg):
 def uptime_check(sock, bot_time):
     chat(sock, "The bot has been online for {} seconds.\r\n".format(bot_time))
 
-def current_game(sock, game):
-    chat(sock, "{} is currently playing {}.".format(cfg.CHAN, game))
-
 def main():
+
     s = socket.socket()
     s.connect((cfg.HOST,cfg.PORT))
 
@@ -50,7 +48,7 @@ def main():
     s.send('CAP REQ :twitch.tv/commands\r\n'.encode("utf-8"))
     s.send('CAP REQ :twitch.tv/membership\r\n'.encode("utf-8"))
 
-    headers = {"Client-ID": "mj1k7s4wfaeb4rwfojwu5jjgjotn19"}
+    bot_headers = {"Client-ID": "mj1k7s4wfaeb4rwfojwu5jjgjotn19"}
 
     chat_msg= re.compile(r"^:\w+!\w+@\w+\.tmi\.twitch\.tv PRIVMSG #\w+ :")
     whisper_msg = re.compile(r"^:\w+!\w+@\w+\.tmi\.twitch\.tv WHISPER \w+ :")
@@ -132,18 +130,36 @@ def main():
                 
             if "!game" in message:
                 url = "https://api.twitch.tv/kraken/channels/{}".format(cfg.CHAN)
-                result = requests.get(url, headers=headers)
+                result = requests.get(url, headers=bot_headers)
                 json_response = result.json()
                 print(json_response)
                 game_data = json_response['game']
+                chat(s, cfg.CHAN + " is currently playing: " + game_data)
+
+            if "!title" in message:
+                url = "https://api.twitch.tv/kraken/channels/{}".format(cfg.CHAN)
+                result = requests.get(url, headers=bot_headers)
+                json_response = result.json()
+                print(json_response)
+                game_data = json_response['status']
                 current_game(s, game_data)
             
-            if "!guessnumber" in message:
-                print("Hiya")    
+            if "!newgame" in message:
+                #new_game = message.split("!newgame ")[1]
+                url = "https://api.twitch.tv/kraken/channels/{}".format(cfg.CHAN)
+                print(url)
+                result = requests.get(url, headers=bot_headers)
+                game_data = '{"game": "Overwatch"}'
+                #data = {'sender': 'whitegirlcoffeebot', 'receiver': 'Twitch', 'message': '{"channel": {"game": "Overwatch"}}'}
+                print(game_data)
+                test = requests.post(url, json=game_data, headers="mj1k7s4wfaeb4rwfojwu5jjgjotn19")
+                #test = requests.post(url, data={'game':'Overwatch'})  
+                print(test.json())         
+                #chat(s, "Game changed to {}\r\n".format(new_game))
 
             # Some command line arguments
             if len(sys.argv) > 1:
-                if "--log" in sys.argv:
+                if "--log" or "-l" in sys.argv:
                     with open('chatlog.txt', 'ab') as f:
                         f.write((username +": " + message+"\n").encode("utf-8"))
 
