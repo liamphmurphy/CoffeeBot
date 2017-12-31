@@ -1,4 +1,5 @@
 from pathlib import Path
+import sys
 import time
 
 def run_setup():
@@ -45,3 +46,6 @@ def run_setup():
         print("\n\nCongrats! The basics have been setup. If you want to customize further with "
                 "custom commands and more, open the file up in a text editor and go crazy!")
 
+    if continue_prompt == "n":
+        print("Exiting the setup script.")
+        sys.exit()
