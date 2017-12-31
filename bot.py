@@ -141,8 +141,8 @@ def main():
                 result = requests.get(url, headers=bot_headers)
                 json_response = result.json()
                 print(json_response)
-                game_data = json_response['status']
-                current_game(s, game_data)
+                status_data = json_response['status']
+                chat(s, status_data)
             
             if "!newgame" in message:
                 #new_game = message.split("!newgame ")[1]
