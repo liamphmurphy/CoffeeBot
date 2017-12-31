@@ -143,19 +143,6 @@ def main():
                 print(json_response)
                 status_data = json_response['status']
                 chat(s, status_data)
-            
-            if "!newgame" in message:
-                #new_game = message.split("!newgame ")[1]
-                url = "https://api.twitch.tv/kraken/channels/{}".format(cfg.CHAN)
-                print(url)
-                result = requests.get(url, headers=bot_headers)
-                game_data = '{"game": "Overwatch"}'
-                #data = {'sender': 'whitegirlcoffeebot', 'receiver': 'Twitch', 'message': '{"channel": {"game": "Overwatch"}}'}
-                print(game_data)
-                test = requests.post(url, json=game_data, headers="mj1k7s4wfaeb4rwfojwu5jjgjotn19")
-                #test = requests.post(url, data={'game':'Overwatch'})  
-                print(test.json())         
-                #chat(s, "Game changed to {}\r\n".format(new_game))
 
             # Some command line arguments
             if len(sys.argv) > 1:
