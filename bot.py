@@ -7,6 +7,7 @@ import cfg
 import time
 import requests, json, random, games
 from core.irc import IRC
+import scripts.setup as setup
 
 # Send a normal chat message for various scenarios
 def chat (sock, msg):
@@ -149,6 +150,9 @@ def main():
                 if "--log" or "-l" in sys.argv:
                     with open('chatlog.txt', 'ab') as f:
                         f.write((username +": " + message+"\n").encode("utf-8"))
+                if "--setup" or "-s" in sys.argv:
+                    setup.run_setup()
+
 
 if __name__ == "__main__":
     main()
