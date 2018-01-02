@@ -6,7 +6,7 @@ import socket, re, os, sys
 import cfg
 import time
 import requests, json, random, games
-from core.irc import IRC
+import core.irc as IRC
 import scripts.setup as setup
 
 # Send a normal chat message for various scenarios
@@ -30,13 +30,19 @@ def ban (sock, user):
 
 # Have the bot print out the result of a command to the channel's chat
 def bot_command (sock, cmd):
-    sock.send("PRIVMSG #{} : {}\r\n".format(cfg.CHAN, cfg.COMMANDS.get(cmd)).encode("utf-8"))
+    sock.send("PRIVMSG #{} : {}\r\n".format(cfg.CHAN, cfg.CUSTOM_COMMANDS.get(cmd)).encode("utf-8"))
 
 def add_command(sock, msg):
     print("hi")
 
 def uptime_check(sock, bot_time):
-    chat(sock, "The bot has been online for {} seconds.\r\n".format(bot_time))
+    chat(sock, "The bot has been online for {} seconds.".format(bot_time))
+
+def get_mods():
+    url = "http://tmi.twitch.tv/group/user/{}/chatters".format(cfg.CHAN)
+    result = requests.get(url, headers=cfg.BOT_HEADERS)
+    json_response = result.json()
+    print(json_response)
 
 def main():
 
@@ -49,12 +55,10 @@ def main():
     s.send('CAP REQ :twitch.tv/commands\r\n'.encode("utf-8"))
     s.send('CAP REQ :twitch.tv/membership\r\n'.encode("utf-8"))
 
-    bot_headers = {"Client-ID": "mj1k7s4wfaeb4rwfojwu5jjgjotn19"}
-
     chat_msg= re.compile(r"^:\w+!\w+@\w+\.tmi\.twitch\.tv PRIVMSG #\w+ :")
     whisper_msg = re.compile(r"^:\w+!\w+@\w+\.tmi\.twitch\.tv WHISPER \w+ :")
     bot_start = time.time() # init start time for the bot for bot_uptime later on. Outside while so it doesn't keep resetting.
-
+    print(bot_start)
     while True:
         response = s.recv(1024).decode("utf-8")
         if response == "PING :tmi.twitch.tv\r\n":
@@ -87,7 +91,7 @@ def main():
                     break
 
             
-            for command in cfg.COMMANDS: # Commands utilize a directory system in cfg.py
+            for command in cfg.CUSTOM_COMMANDS: # Commands utilize a directory system in cfg.py
                 if re.match(command, message):
                     print("reached command")
                     message = message.replace("\r\n", "") # IRC syntax causes \r\n to get appended to the message. Below gets rid of it.
@@ -118,7 +122,9 @@ def main():
                     cfg.CHANNEL_QUOTES.update(new_dict)
                     
             if "!addcommand" in message:
-                print("Stuff should be here, but it isn't yet. :(")            
+                user_command = message.split("!addcommand ")[1]
+                print(user_command)
+                #print(message[11])           
            
             if "!botrestart" in message:  # If user types !bot_restart, the bot will restart itself. Mainly to check for updates in cfg.py
                 chat(s, "Bleep bloop! I am restarting.\r\n")
@@ -131,7 +137,7 @@ def main():
                 
             if "!game" in message:
                 url = "https://api.twitch.tv/kraken/channels/{}".format(cfg.CHAN)
-                result = requests.get(url, headers=bot_headers)
+                result = requests.get(url, headers=cfg.BOT_HEADERS)
                 json_response = result.json()
                 print(json_response)
                 game_data = json_response['game']
@@ -139,11 +145,14 @@ def main():
 
             if "!title" in message:
                 url = "https://api.twitch.tv/kraken/channels/{}".format(cfg.CHAN)
-                result = requests.get(url, headers=bot_headers)
+                result = requests.get(url, headers=cfg.BOT_HEADERS)
                 json_response = result.json()
                 print(json_response)
                 status_data = json_response['status']
                 chat(s, status_data)
+            
+            if "!mods" in message:
+                get_mods()
 
             # Some command line arguments
             if len(sys.argv) > 1:
