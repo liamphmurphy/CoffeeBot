@@ -1,3 +1,7 @@
+# THIS BOT IS NO LONGER BEING WORKED ON.
+
+**Instead,** I moved on to a project to write a Twitch bot in Golang which recently hit a 1.0 release: https://github.com/murnux/HappyBot
+
 # CoffeeBot
 An IRC bot for Twitch.tv written in python. 
 
